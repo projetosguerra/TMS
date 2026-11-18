@@ -1,0 +1,17 @@
+node_modules/
+dist/
+.npm-cache/
+bin/
+obj/
+.env*
+!.env.example
+*.user
+*.suo
+.vs/
+*.pfx
+*.p12
+*.pem
+*.key
+secrets.json
+appsettings.*.local.json
+TestResults/
