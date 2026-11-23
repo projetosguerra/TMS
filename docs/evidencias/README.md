@@ -37,7 +37,7 @@ As verificações visuais foram realizadas no navegador integrado. Este registro
 
 ## Verificações e evidências pendentes
 
-- Testes automatizados das regras de domínio, previstos na Etapa 3.
+- Validação da persistência em PostgreSQL e da autenticação com usuários do projeto Supabase de desenvolvimento.
 - Cenários funcionais RF01–RF06, incluindo os registros do Apêndice F para RF02, RF05 e RF06.
 - Consultas SQL antes/depois, dependentes da implementação da persistência.
 - Comprovação de homologação e produção publicadas.
@@ -47,3 +47,9 @@ As verificações visuais foram realizadas no navegador integrado. Este registro
 ## Risco de dependências
 
 A auditoria identificou ReDoS em picomatch, propagado pela cadeia de ferramentas de desenvolvimento Vite/Tailwind. A decisão e o compromisso de reavaliação estão registrados em `../decisoes.md`. O servidor frontend utilizado na validação foi iniciado em loopback.
+
+## 2026-11-19 — Fundação da API HTTP
+
+Restore concluído. Build Release com zero avisos e zero erros. A compilação Debug estava em uso por uma instância local da API. A execução Release de xUnit aprovou 99 testes de domínio e 12 testes HTTP com chaves de teste e EF InMemory. Zero falhas.
+
+O EF gerou o SQL da migration inicial e confirmou correspondência com o modelo. A execução foi offline. Os quatro testes de PostgreSQL foram ignorados por ausência de conexão local de teste. O teste com dois access tokens reais foi ignorado por ausência de configuração do projeto Supabase. A aplicação da migration, a repetição do seed, a rejeição das FKs e o isolamento com dados e identidades reais seguem pendentes de execução.
