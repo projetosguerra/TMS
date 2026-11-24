@@ -31,6 +31,23 @@ public sealed class TabelaFrete : Entidade
         Ativa = ativa;
     }
 
+    public void Atualizar(string ufOrigem, string ufDestino, decimal valorMinimo,
+        decimal valorPorKg, int prazoDias, bool ativa)
+    {
+        var origem = ufOrigem.Trim().ToUpperInvariant();
+        var destino = ufDestino.Trim().ToUpperInvariant();
+        Validacao.Exigir(Validacao.Uf(origem) && Validacao.Uf(destino), "UF invalida.");
+        Validacao.Exigir(prazoDias >= 1, "Informe o prazo em dias.");
+        Validacao.DecimalNoIntervalo(valorMinimo, 2, 9999999999.99m, false);
+        Validacao.DecimalNoIntervalo(valorPorKg, 4, 99999999.9999m, false);
+        UfOrigem = origem;
+        UfDestino = destino;
+        ValorMinimo = valorMinimo;
+        ValorPorKg = valorPorKg;
+        PrazoDias = prazoDias;
+        Ativa = ativa;
+    }
+
     public static decimal PesoTaxado(decimal peso, decimal volume, decimal fator = FatorCubagemPadrao)
     {
         Validacao.Exigir(peso > 0 && volume >= 0 && fator > 0, "Peso, volume ou fator inválido.");

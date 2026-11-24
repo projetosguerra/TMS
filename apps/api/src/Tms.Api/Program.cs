@@ -1,6 +1,10 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Tms.Api.Auth;
+using Tms.Api.Modules.Transportadoras;
+using Tms.Api.Modules.TabelasFrete;
+using Tms.Api.Modules.Fretes;
+using Tms.Api.Modules.Dashboard;
 using Tms.Api.Modules.Usuarios;
 using Tms.Infrastructure;
 
@@ -14,7 +18,9 @@ builder.Services.AddAuthorization();
 builder.Services.AddProblemDetails();
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
 {
-    var origem = builder.Configuration["Cors:Origin"];
+    var origem = builder.Environment.IsDevelopment()
+        ? "http://localhost:5173"
+        : builder.Configuration["Cors:Origin"];
     if (!string.IsNullOrWhiteSpace(origem))
     {
         if (!Uri.TryCreate(origem, UriKind.Absolute, out var uri) ||
@@ -24,7 +30,8 @@ builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
     }
 }));
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+    options.CustomSchemaIds(tipo => tipo.FullName?.Replace('+', '.') ?? tipo.Name));
 var app = builder.Build();
 
 if (args.Contains("--seed-development"))
@@ -61,6 +68,10 @@ app.UseAuthorization();
 app.MapGet("/api/health", () => Results.Ok(new { status = "ok" })).AllowAnonymous();
 var protegidos = app.MapGroup("/api").RequireAuthorization().AddEndpointFilter<FiltroUsuario>();
 Me.Mapear(protegidos);
+Transportadoras.Mapear(protegidos);
+TabelasFrete.Mapear(protegidos);
+Fretes.Mapear(protegidos);
+Dashboard.Mapear(protegidos);
 app.Run();
 
 public partial class Program { }

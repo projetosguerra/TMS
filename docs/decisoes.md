@@ -41,3 +41,20 @@ O risco será reavaliado antes da publicação e sempre que houver correções d
 - A API verifica assinatura assimétrica, emissor do projeto, audiência authenticated, validade, role de usuário e sub UUID. As chaves públicas vêm do JWKS via HTTPS. O cadastro ativo no banco fornece a empresa e o perfil em cada requisição protegida.
 - RLS está habilitada sem políticas de acesso direto. Os papéis comuns sujeitos a RLS ficam sem acesso às linhas. O proprietário e papéis BYPASSRLS podem lê-las. Com a conexão de servidor planejada, o isolamento de leitura depende do filtro do contexto por empresa. As FKs compostas protegem os vínculos entre registros. A API não propaga o JWT para a sessão SQL.
 - O novo projeto de testes mantém as dependências HTTP e de persistência fora de Tms.Tests. O provedor InMemory e chaves efêmeras exercitam o contrato HTTP offline. Os testes de migration e integridade usam Npgsql e um esquema exclusivo em banco local de teste. A autenticação com tokens emitidos pelo projeto tem um ensaio separado de leitura.
+
+## 2026-11-24 — Autenticação mínima do frontend para RF02
+
+- A tela RF02 usa o endpoint HTTPS de password grant do Supabase Auth via `fetch`, sem adicionar SDK. A Publishable Key é configuração pública local em `apps/web/.env.local`; access token permanece apenas em memória React e não é salvo em localStorage.
+- Motivo: entregar o fluxo de demonstração com a stack e dependências existentes, mantendo a validação JWT e o escopo da empresa no backend.
+
+## 2026-11-24 — Operação do MVP de fretes
+
+- Os módulos de tabelas de frete, cotações, fretes, acompanhamento, documentos fiscais e dashboard usam a migration e as entidades já existentes. Não foi criada migration nova nesta etapa.
+- As rotas ficam no grupo protegido já usado pela API; toda leitura e escrita usa o filtro de empresa derivado do cadastro ativo associado ao `sub` do JWT. O frontend não envia `empresa_id` como fonte de autorização.
+- A tela React consulta a API com `fetch` e mantém o access token somente em memória. Não foi adicionada dependência ao frontend.
+- No dashboard, entregas e custos são agregados pela data de `entregue_em` dentro do período selecionado. O tempo médio é contado entre a criação do frete e a entrega; indicadores sem dados retornam zero. São dias corridos, conforme o modelo atual do MVP.
+- A documentação fiscal registra somente tipo, número, chave e valor. Upload e validação fiscal junto à SEFAZ continuam fora do MVP.
+## 2026-11-24 — CORS local do frontend
+
+- Em Development, a API permite CORS apenas para `http://localhost:5173`, origem do Vite no fluxo local. Em ambientes diferentes, a origem exata permanece configurada por `Cors__Origin`.
+- Motivo: corrigir o preflight `Authorization` entre frontend e API durante login e manter a lista de origens restrita. `UseCors` permanece antes dos middlewares de autenticação/autorização; validação JWT não é alterada.
