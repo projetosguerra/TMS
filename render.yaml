@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: tms-embarcador-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./apps/api/Dockerfile
+    dockerContext: ./apps/api
+    healthCheckPath: /api/health
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: Supabase__Url
+        value: https://bdyyutxdrxsjrpztlxow.supabase.co
+      - key: ConnectionStrings__Default
+        sync: false
+      - key: Cors__Origin
+        sync: false

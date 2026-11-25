@@ -1,0 +1,16 @@
+**/bin/
+**/obj/
+**/TestResults/
+tests/
+.git/
+.vs/
+*.user
+*.suo
+.env*
+**/*.pem
+**/*.crt
+**/*.cer
+**/*.pfx
+**/*.p12
+**/secrets.json
+**/appsettings.*.local.json
